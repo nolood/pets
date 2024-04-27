@@ -1,18 +1,27 @@
 package main
 
 import (
-	"go.uber.org/zap"
+	"os"
+	"os/signal"
+	"pets/internal/app"
 	"pets/internal/config"
 	"pets/internal/lib/logger"
+	"syscall"
 )
 
 func main() {
-
 	cfg := config.MustLoad()
 
 	log := logger.New("local")
 
-	log.Info("config", zap.Any("config", cfg))
+	application := app.New(log, cfg.Port, cfg.Storage)
 
-	// TODO: ...
+	go application.Api.MustRun()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+	<-stop
+	application.Api.Stop()
+
+	log.Info("Application stopped")
 }
