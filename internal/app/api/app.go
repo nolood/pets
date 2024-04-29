@@ -4,27 +4,35 @@ import (
 	"errors"
 	"go.uber.org/zap"
 	"net/http"
-	"pets/internal/routers"
+	"pets/internal/app/api/handlers"
+	"pets/internal/app/api/repositories"
+	"pets/internal/app/api/routers"
+	"pets/internal/app/api/services"
+	"pets/internal/storage/postgres"
 	"strconv"
 )
 
 type Api struct {
-	log  *zap.Logger
-	srv  *http.Server
-	rts  *routers.Routers
-	port int
+	log    *zap.Logger
+	srv    *http.Server
+	router *routers.Routers
+	port   int
 }
 
-func New(log *zap.Logger, port int, rts *routers.Routers) *Api {
+func New(log *zap.Logger, port int, storage *postgres.Storage) *Api {
+	repos := repositories.New(log, storage)
+	servs := services.New(log, repos)
+	hands := handlers.New(log, servs)
+	router := routers.New(hands)
 	return &Api{
-		log:  log,
-		port: port,
-		rts:  rts,
+		log:    log,
+		port:   port,
+		router: router,
 	}
 }
 
 func (a *Api) MustRun() {
-	router := a.rts.Router
+	router := a.router.Router
 
 	srv := &http.Server{Addr: ":" + strconv.Itoa(a.port), Handler: router}
 

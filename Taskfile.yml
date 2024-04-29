@@ -7,7 +7,3 @@ tasks:
     desc: "Start the local server"
     cmds:
       - go run ./cmd/pets/main.go -config ./config/local.yml
-  create-migration:
-    aliases:
-      - up
-    desc:

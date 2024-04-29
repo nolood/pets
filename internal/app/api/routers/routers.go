@@ -3,8 +3,8 @@ package routers
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"pets/internal/handlers"
-	"pets/internal/routers/user"
+	"pets/internal/app/api/handlers"
+	"pets/internal/app/api/routers/user"
 	"time"
 )
 
