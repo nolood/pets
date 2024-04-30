@@ -5,9 +5,9 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"pets/internal/app/api/handlers"
-	"pets/internal/app/api/repositories"
 	"pets/internal/app/api/routers"
 	"pets/internal/app/api/services"
+	"pets/internal/repositories"
 	"pets/internal/storage/postgres"
 	"strconv"
 )

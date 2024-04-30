@@ -2,8 +2,8 @@ package services
 
 import (
 	"go.uber.org/zap"
-	"pets/internal/app/api/repositories"
 	"pets/internal/app/api/services/user"
+	"pets/internal/repositories"
 )
 
 type Services struct {

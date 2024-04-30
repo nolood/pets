@@ -8,7 +8,7 @@ import (
 func New(handler user.Handler) *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Get("/", handler.Create)
+	r.Post("/", handler.Create)
 
 	return r
 }

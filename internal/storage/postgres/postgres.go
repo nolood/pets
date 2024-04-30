@@ -13,7 +13,8 @@ type Storage struct {
 }
 
 func New(cfg config.Storage) *Storage {
-	connStr := fmt.Sprintf("user=%s dbname=%s password=%s dbport=%d sslmode=disable", cfg.User, cfg.Dbname, cfg.Password, cfg.Port)
+
+	connStr := fmt.Sprintf("user=%s dbname=%s password=%s port=%d sslmode=disable", cfg.User, cfg.Dbname, cfg.Password, cfg.Port)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Panic(err)
