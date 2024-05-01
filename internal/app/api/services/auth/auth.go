@@ -7,23 +7,17 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"go.uber.org/zap"
 	"pets/internal/config"
 	"pets/internal/domain/models"
 	"pets/internal/domain/telegram"
+	"pets/internal/lib/jwt"
 	"pets/internal/repositories/user"
 	"time"
 )
 
 type Service interface {
 	Validate(ctx context.Context, data telegram.WebAppData) (string, error)
-}
-
-type Claims struct {
-	ID       uint64 `json:"id"`
-	Username string `json:"username"`
-	jwt.StandardClaims
 }
 
 type userData struct {
@@ -78,7 +72,7 @@ func (s *authService) Validate(ctx context.Context, data telegram.WebAppData) (s
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
-	token, err := generateToken(newUser, s.cfg.Secret)
+	token, err := jwt.GenerateToken(newUser, s.cfg.Secret)
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
@@ -90,22 +84,6 @@ func hmacSHA256(data []byte, key []byte) []byte {
 	h := hmac.New(sha256.New, key)
 	h.Write(data)
 	return h.Sum(nil)
-}
-
-// TODO: move to another module
-
-func generateToken(user models.User, secret string) (string, error) {
-	claims := Claims{
-		Username: user.Username,
-		ID:       user.ID,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	return token.SignedString([]byte(secret))
 }
 
 func isDataOutdated(authDate int64) bool {

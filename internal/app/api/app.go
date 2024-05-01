@@ -24,7 +24,7 @@ func New(log *zap.Logger, port int, storage *postgres.Storage, cfg *config.Confi
 	repos := repositories.New(log, storage)
 	servs := services.New(log, repos, cfg)
 	hands := handlers.New(log, servs, cfg.Telegram.Token)
-	router := routers.New(hands)
+	router := routers.New(hands, cfg)
 	return &Api{
 		log:    log,
 		port:   port,
