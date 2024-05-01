@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY UNIQUE,
     tg_id INTEGER NOT NULL UNIQUE,
     username VARCHAR(100) NOT NULL,
     lastname VARCHAR(100),

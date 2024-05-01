@@ -14,7 +14,7 @@ func main() {
 
 	log := logger.New("local")
 
-	application := app.New(log, cfg.Port, cfg.Storage)
+	application := app.New(log, cfg.Port, cfg)
 
 	go application.Api.MustRun()
 

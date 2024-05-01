@@ -1,8 +1,11 @@
 env: "local"
 port: 5000
+secret: "egorlox"
 storage:
     host: "localhost"
     port: 5444
     user: "postgres"
     password: "1234"
     dbname: "pets"
+telegram:
+    token: "6511254635:AAEK6zAbs7bMzgw3SGjfC5OTfg0Gc6B3v8g"

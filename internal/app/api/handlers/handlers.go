@@ -2,16 +2,19 @@ package handlers
 
 import (
 	"go.uber.org/zap"
+	"pets/internal/app/api/handlers/auth"
 	"pets/internal/app/api/handlers/user"
 	"pets/internal/app/api/services"
 )
 
 type Handlers struct {
 	User user.Handler
+	Auth auth.Handler
 }
 
-func New(log *zap.Logger, servs *services.Services) *Handlers {
+func New(log *zap.Logger, servs *services.Services, token string) *Handlers {
 	return &Handlers{
 		User: user.New(log, servs.User),
+		Auth: auth.New(log, servs.Auth, token),
 	}
 }

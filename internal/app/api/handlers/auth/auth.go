@@ -2,50 +2,61 @@ package auth
 
 import (
 	"encoding/json"
+	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"net/http"
 	"pets/internal/app/api/services/auth"
-	"pets/internal/domain/models"
+	"pets/internal/domain/telegram"
 )
 
 var (
-	ErrLogin = "err-user-login"
-	ErrReg   = "err-user-register"
+	ErrValidate = "err-data-validate"
 )
 
 type Handler interface {
-	Login(w http.ResponseWriter, r *http.Request)
-	Register(w http.ResponseWriter, r *http.Request)
+	Validate(w http.ResponseWriter, r *http.Request)
 }
 
 type authHandler struct {
 	service auth.Service
 	log     *zap.Logger
+	token   string
 }
 
-func New(log *zap.Logger, service auth.Service) Handler {
+func New(log *zap.Logger, service auth.Service, token string) Handler {
 	return &authHandler{
 		log:     log,
 		service: service,
+		token:   token,
 	}
 }
 
-func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
-	var entity models.User
-	err := json.NewDecoder(r.Body).Decode(&entity)
-	if err != nil {
-		h.log.Error("Cant decode", zap.Error(err))
-		http.Error(w, ErrLogin, http.StatusBadRequest)
-		return
-	}
-}
+func (h *authHandler) Validate(w http.ResponseWriter, r *http.Request) {
 
-func (h *authHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var entity models.User
-	err := json.NewDecoder(r.Body).Decode(&entity)
+	var webAppData telegram.WebAppData
+
+	userStr := chi.URLParam(r, "user")
+	webAppData.User = userStr
+	webAppData.Token = h.token
+
+	err := json.NewDecoder(r.Body).Decode(&webAppData)
 	if err != nil {
 		h.log.Error("Cant decode", zap.Error(err))
-		http.Error(w, ErrReg, http.StatusBadRequest)
+		http.Error(w, "err-user-login", http.StatusBadRequest)
 		return
 	}
+
+	token, err := h.service.Validate(r.Context(), webAppData)
+	if err != nil {
+		h.log.Error("Cant validate", zap.Error(err))
+		http.Error(w, ErrValidate, http.StatusBadRequest)
+		return
+	}
+
+	_, err = w.Write([]byte(token))
+	if err != nil {
+		h.log.Error("Cant write", zap.Error(err))
+		http.Error(w, ErrValidate, http.StatusInternalServerError)
+	}
+
 }

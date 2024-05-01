@@ -34,7 +34,7 @@ func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUser, err := h.service.Create(r.Context(), entity)
+	newUser, err := h.service.CreateOrUpdate(r.Context(), entity)
 	if err != nil {
 		h.log.Error("User doesn't created", zap.Error(err))
 		http.Error(w, "err-user-create", http.StatusBadRequest)

@@ -11,10 +11,10 @@ type App struct {
 	Api *api.Api
 }
 
-func New(log *zap.Logger, port int, storageCfg config.Storage) *App {
-	storage := postgres.New(storageCfg)
+func New(log *zap.Logger, port int, cfg *config.Config) *App {
+	storage := postgres.New(cfg.Storage)
 
-	apiSrv := api.New(log, port, storage)
+	apiSrv := api.New(log, port, storage, cfg)
 
 	return &App{
 		Api: apiSrv,

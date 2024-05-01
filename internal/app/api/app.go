@@ -7,6 +7,7 @@ import (
 	"pets/internal/app/api/handlers"
 	"pets/internal/app/api/routers"
 	"pets/internal/app/api/services"
+	"pets/internal/config"
 	"pets/internal/repositories"
 	"pets/internal/storage/postgres"
 	"strconv"
@@ -19,10 +20,10 @@ type Api struct {
 	port   int
 }
 
-func New(log *zap.Logger, port int, storage *postgres.Storage) *Api {
+func New(log *zap.Logger, port int, storage *postgres.Storage, cfg *config.Config) *Api {
 	repos := repositories.New(log, storage)
-	servs := services.New(log, repos)
-	hands := handlers.New(log, servs)
+	servs := services.New(log, repos, cfg)
+	hands := handlers.New(log, servs, cfg.Telegram.Token)
 	router := routers.New(hands)
 	return &Api{
 		log:    log,

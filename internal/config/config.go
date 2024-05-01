@@ -6,6 +6,9 @@ import (
 	"os"
 )
 
+type Telegram struct {
+	Token string `yaml:"token" env-required:"true"`
+}
 type Storage struct {
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
@@ -15,9 +18,11 @@ type Storage struct {
 }
 
 type Config struct {
-	Env     string  `yaml:"env" env-required:"true"`
-	Port    int     `yaml:"port" env-required:"true"`
-	Storage Storage `yaml:"storage" env-required:"true"`
+	Env      string   `yaml:"env" env-required:"true"`
+	Port     int      `yaml:"port" env-required:"true"`
+	Secret   string   `yaml:"secret" env-required:"true"`
+	Storage  Storage  `yaml:"storage" env-required:"true"`
+	Telegram Telegram `yaml:"telegram" env-required:"true"`
 }
 
 func MustLoad() *Config {
