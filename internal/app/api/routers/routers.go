@@ -6,6 +6,7 @@ import (
 	"pets/internal/app/api/handlers"
 	authmiddleware "pets/internal/app/api/middlewares/auth"
 	"pets/internal/app/api/routers/auth"
+	"pets/internal/app/api/routers/farm"
 	"pets/internal/app/api/routers/user"
 	"pets/internal/config"
 	"time"
@@ -23,14 +24,16 @@ func New(hands *handlers.Handlers, cfg *config.Config) *Routers {
 
 	userRts := user.New(hands.User)
 	authRts := auth.New(hands.Auth)
+	farmRts := farm.New(hands.Farm)
 
 	r.Group(func(r chi.Router) {
-		r.Use(authmiddleware.Middleware(cfg.Secret))
 		r.Mount("/auth", authRts)
 	})
 
 	r.Group(func(r chi.Router) {
+		r.Use(authmiddleware.Middleware(cfg.Secret, cfg.Env))
 		r.Mount("/user", userRts)
+		r.Mount("/farm", farmRts)
 	})
 
 	return &Routers{Router: r}

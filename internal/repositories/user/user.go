@@ -13,16 +13,16 @@ type Repository interface {
 	CreateOrUpdate(ctx context.Context, entity models.User) (models.User, error)
 }
 
-type farmRepo struct {
+type userRepo struct {
 	db  *sql.DB
 	log *zap.Logger
 }
 
 func New(log *zap.Logger, storage *postgres.Storage) Repository {
-	return &farmRepo{db: storage.Db, log: log}
+	return &userRepo{db: storage.Db, log: log}
 }
 
-func (r *farmRepo) CreateOrUpdate(ctx context.Context, entity models.User) (models.User, error) {
+func (r *userRepo) CreateOrUpdate(ctx context.Context, entity models.User) (models.User, error) {
 	const op = "repo.user.create"
 
 	stmt, err := r.db.Prepare(

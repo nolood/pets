@@ -8,9 +8,16 @@ import (
 	"strings"
 )
 
-func Middleware(secret string) func(http.Handler) http.Handler {
+func Middleware(secret string, env string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+			if env == "local" {
+				ctx := context.WithValue(r.Context(), "user_id", 1)
+				next.ServeHTTP(w, r.WithContext(ctx))
+				return
+			}
+
 			authorizationHeader := r.Header.Get("Authorization")
 
 			if authorizationHeader == "" {
