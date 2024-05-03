@@ -2,8 +2,9 @@ package config
 
 import (
 	"flag"
-	"github.com/ilyakaznacheev/cleanenv"
 	"os"
+
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Telegram struct {
@@ -21,6 +22,7 @@ type Config struct {
 	Env      string   `yaml:"env" env-required:"true"`
 	Port     int      `yaml:"port" env-required:"true"`
 	Secret   string   `yaml:"secret" env-required:"true"`
+	Static   string   `yaml:"static" env-default:"./static"`
 	Storage  Storage  `yaml:"storage" env-required:"true"`
 	Telegram Telegram `yaml:"telegram" env-required:"true"`
 }
