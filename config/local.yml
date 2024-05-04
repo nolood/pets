@@ -9,4 +9,4 @@ storage:
   password: "1234"
   dbname: "pets"
 telegram:
-  token: "6511254635:AAEK6zAbs7bMzgw3SGjfC5OTfg0Gc6B3v8g" # TODO: вынести в env
+  token: "" # TODO: вынести в env
