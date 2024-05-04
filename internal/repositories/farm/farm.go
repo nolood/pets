@@ -3,6 +3,7 @@ package farm
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"pets/internal/domain/models"
 	"pets/internal/storage/postgres"
@@ -66,6 +67,10 @@ func (r *farmRepo) Get(ctx context.Context) (models.Farm, error) {
 
 	err = row.Scan(&farmInst.ID, &farmInst.UserID)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return farmInst, nil
+		}
+
 		return farmInst, fmt.Errorf("%s: %w", op, err)
 	}
 

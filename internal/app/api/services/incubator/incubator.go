@@ -3,6 +3,7 @@ package incubator
 import (
 	"context"
 	"fmt"
+	"log"
 	"pets/internal/domain/models"
 	"pets/internal/repositories/incubator"
 )
@@ -21,6 +22,8 @@ func New(repo incubator.Repository) Service {
 
 func (s *incubatorService) Get(ctx context.Context) (models.Incubator, error) {
 	const op = "service.incubator.get"
+
+	log.Println(op)
 
 	incubatorInst, err := s.repo.Get(ctx)
 	if err != nil {

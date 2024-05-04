@@ -87,9 +87,9 @@ CREATE TABLE IF NOT EXISTS UsersEggs (
                                         id SERIAL PRIMARY KEY UNIQUE,
                                         user_id INTEGER REFERENCES users (id),
                                         egg_id INTEGER REFERENCES eggs (id),
-                                        hatch_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                        hatch_start TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                        hatch_end TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                        hatch_time INTEGER NOT NULL,
+                                        hatch_start TIMESTAMP,
+                                        hatch_end TIMESTAMP,
                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS UsersEggs (
 CREATE TABLE IF NOT EXISTS incubators (
                                     id SERIAL PRIMARY KEY UNIQUE,
                                     user_id INTEGER REFERENCES users (id),
-                                    egg_id INTEGER REFERENCES eggs (id) DEFAULT NULL,
+                                    egg_id INTEGER REFERENCES UsersEggs (id) DEFAULT NULL,
                                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

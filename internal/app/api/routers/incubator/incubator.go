@@ -8,5 +8,7 @@ import (
 func New(handler incubator.Handler) *chi.Mux {
 	r := chi.NewRouter()
 
+	r.Get("/", handler.Get)
+
 	return r
 }

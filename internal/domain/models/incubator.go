@@ -12,7 +12,7 @@ type UserEgg struct {
 	ID         uint64     `json:"id"`
 	UserID     uint64     `json:"user_id"`
 	Egg        Egg        `json:"egg"`
-	HatchTime  time.Time  `json:"hatch_time"`
+	HatchTime  uint64     `json:"hatch_time"`
 	HatchStart *time.Time `json:"hatch_start"`
 	HatchEnd   *time.Time `json:"hatch_end"`
 }
