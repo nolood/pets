@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS farms (
 
 CREATE TABLE IF NOT EXISTS pets (
                                     id SERIAL PRIMARY KEY UNIQUE,
-                                    user_id INTEGER,
                                     rarity INTEGER,
                                     image VARCHAR(1000),
                                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

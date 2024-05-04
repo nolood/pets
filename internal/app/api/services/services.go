@@ -22,6 +22,6 @@ func New(log *zap.Logger, repos *repositories.Repositories, cfg *config.Config) 
 		User:      user.New(log, repos.User),
 		Auth:      auth.New(log, repos.User, cfg),
 		Farm:      farm.New(repos.Farm),
-		Incubator: incubator.New(repos.Incubator),
+		Incubator: incubator.New(repos),
 	}
 }
