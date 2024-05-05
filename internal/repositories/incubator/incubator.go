@@ -10,8 +10,11 @@ import (
 )
 
 type Repository interface {
-	Init(ctx context.Context) (models.Incubator, error)
 	Get(ctx context.Context) (models.Incubator, error)
+	Init(ctx context.Context) (models.Incubator, error)
+	Clear(ctx context.Context) (models.Incubator, error)
+	GetUserEgg(ctx context.Context, eggID uint64) (models.UserEgg, error)
+	SetEgg(ctx context.Context, eggID *uint64) (models.Incubator, error)
 	RemoveEgg(ctx context.Context, eggID uint64) (models.Egg, error)
 }
 
@@ -21,6 +24,80 @@ type incubatorRepo struct {
 
 func New(storage *postgres.Storage) Repository {
 	return &incubatorRepo{db: storage.Db}
+}
+
+// GetUserEgg - eggID this is id of UserEgg, not egg
+func (r *incubatorRepo) GetUserEgg(ctx context.Context, eggID uint64) (models.UserEgg, error) {
+	const op = "repository.incubator.GetUserEgg"
+
+	userId := ctx.Value("user_id")
+
+	stmt, err := r.db.Prepare("SELECT id, user_id, egg_id, hatch_time, hatch_start, hatch_end FROM userseggs WHERE user_id = $1 AND id = $2")
+	if err != nil {
+		return models.UserEgg{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	row := stmt.QueryRowContext(ctx, userId, eggID)
+
+	var userEgg models.UserEgg
+	var egg models.Egg
+
+	err = row.Scan(&userEgg.ID, &userEgg.UserID, &egg.ID, &userEgg.HatchTime, &userEgg.HatchStart, &userEgg.HatchEnd)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return models.UserEgg{}, nil
+		}
+		return models.UserEgg{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	userEgg.Egg = &egg
+
+	return userEgg, nil
+}
+
+func (r *incubatorRepo) SetEgg(ctx context.Context, eggID *uint64) (models.Incubator, error) {
+
+	const op = "repository.incubator.setEgg"
+
+	userId := ctx.Value("user_id")
+
+	stmt, err := r.db.Prepare("UPDATE incubators SET egg_id = $1 WHERE user_id = $2")
+	if err != nil {
+		return models.Incubator{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	stmt.QueryRowContext(ctx, eggID, userId)
+
+	incubator, err := r.Get(ctx)
+	if err != nil {
+		return models.Incubator{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return incubator, nil
+}
+
+func (r *incubatorRepo) Clear(ctx context.Context) (models.Incubator, error) {
+	const op = "repository.incubator.clear"
+
+	userId := ctx.Value("user_id")
+
+	stmt, err := r.db.Prepare("UPDATE incubators SET egg_id = NULL WHERE user_id = $1 RETURNING id, user_id")
+	if err != nil {
+		return models.Incubator{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	row := stmt.QueryRowContext(ctx, userId)
+
+	var incubator models.Incubator
+
+	incubator.Egg = nil
+
+	err = row.Scan(&incubator.ID, &incubator.UserID)
+	if err != nil {
+		return models.Incubator{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return incubator, nil
 }
 
 func (r *incubatorRepo) RemoveEgg(ctx context.Context, eggID uint64) (models.Egg, error) {
@@ -126,9 +203,9 @@ func (r *incubatorRepo) createDefaultEgg(ctx context.Context) (models.UserEgg, e
 
 	row := stmt.QueryRowContext(ctx, eggID, userId, 5, nil, nil)
 
-	var egg models.UserEgg
+	var userEgg models.UserEgg
 
-	err = row.Scan(&egg.ID, &egg.UserID, &egg.HatchTime, &egg.HatchStart, &egg.HatchEnd)
+	err = row.Scan(&userEgg.ID, &userEgg.UserID, &userEgg.HatchTime, &userEgg.HatchStart, &userEgg.HatchEnd)
 	if err != nil {
 		return models.UserEgg{}, fmt.Errorf("%s: %w", op, err)
 	}
@@ -140,7 +217,14 @@ func (r *incubatorRepo) createDefaultEgg(ctx context.Context) (models.UserEgg, e
 
 	row = stmt.QueryRowContext(ctx, eggID)
 
-	err = row.Scan(&egg.Egg.ID, &egg.Egg.Rarity, &egg.Egg.Image)
+	var egg models.Egg
 
-	return egg, nil
+	err = row.Scan(&egg.ID, &egg.Rarity, &egg.Image)
+	if err != nil {
+		return models.UserEgg{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	userEgg.Egg = &egg
+
+	return userEgg, nil
 }

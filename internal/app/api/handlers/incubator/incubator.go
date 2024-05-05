@@ -12,7 +12,7 @@ import (
 type Handler interface {
 	Get(w http.ResponseWriter, r *http.Request)
 	SetEgg(w http.ResponseWriter, r *http.Request)
-	RemoveEgg(w http.ResponseWriter, r *http.Request)
+	Clear(w http.ResponseWriter, r *http.Request)
 	OpenEgg(w http.ResponseWriter, r *http.Request)
 }
 
@@ -25,7 +25,27 @@ func New(log *zap.Logger, s incubator.Service) Handler {
 	return &incubatorHandler{s: s, log: log}
 }
 
-func (h *incubatorHandler) RemoveEgg(w http.ResponseWriter, r *http.Request) {
+func (h *incubatorHandler) Clear(w http.ResponseWriter, r *http.Request) {
+
+	incubatorInst, err := h.s.Clear(r.Context())
+	if err != nil {
+		http.Error(w, "err-incubator-clear", http.StatusInternalServerError)
+		h.log.Error("Cant clear incubator", zap.Error(err))
+		return
+	}
+
+	response, err := json.Marshal(incubatorInst)
+	if err != nil {
+		http.Error(w, "err-incubator-marshal", http.StatusInternalServerError)
+		h.log.Error("Cant marshal incubator", zap.Error(err))
+	}
+
+	_, err = w.Write(response)
+	if err != nil {
+		http.Error(w, "err-incubator-write", http.StatusInternalServerError)
+		h.log.Error("Cant write incubator", zap.Error(err))
+	}
+
 }
 
 func (h *incubatorHandler) OpenEgg(w http.ResponseWriter, r *http.Request) {
@@ -61,6 +81,30 @@ func (h *incubatorHandler) OpenEgg(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *incubatorHandler) SetEgg(w http.ResponseWriter, r *http.Request) {
+
+	eggIdStr := chi.URLParam(r, "eggId")
+
+	eggId, err := strconv.ParseUint(eggIdStr, 10, 64)
+
+	incubatorInst, err := h.s.SetEgg(r.Context(), eggId)
+	if err != nil {
+		http.Error(w, "err-incubator-set", http.StatusInternalServerError)
+		h.log.Error("Cant set incubator", zap.Error(err))
+		return
+	}
+
+	response, err := json.Marshal(incubatorInst)
+	if err != nil {
+		http.Error(w, "err-incubator-marshal", http.StatusInternalServerError)
+		h.log.Error("Cant marshal incubator", zap.Error(err))
+		return
+	}
+
+	_, err = w.Write(response)
+	if err != nil {
+		http.Error(w, "err-incubator-write", http.StatusInternalServerError)
+		h.log.Error("Cant write incubator", zap.Error(err))
+	}
 }
 
 func (h *incubatorHandler) Get(w http.ResponseWriter, r *http.Request) {
