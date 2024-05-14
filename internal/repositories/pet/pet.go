@@ -2,8 +2,8 @@ package pet
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"log"
 	"pets/internal/domain/models"
 	"pets/internal/storage/postgres"
@@ -14,7 +14,7 @@ type Repository interface {
 }
 
 type petRepo struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
 func New(storage *postgres.Storage) Repository {

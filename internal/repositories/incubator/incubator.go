@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"pets/internal/domain/models"
 	"pets/internal/storage/postgres"
 )
@@ -19,7 +20,7 @@ type Repository interface {
 }
 
 type incubatorRepo struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
 func New(storage *postgres.Storage) Repository {

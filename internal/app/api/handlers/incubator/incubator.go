@@ -9,6 +9,13 @@ import (
 	"strconv"
 )
 
+var (
+	ErrClear   = "err-incubator-clear"
+	ErrOpenEgg = "err-incubator-open-eeg"
+	ErrSetEgg  = "err-incubator-set-egg"
+	ErrGet     = "err-incubator-get"
+)
+
 type Handler interface {
 	Get(w http.ResponseWriter, r *http.Request)
 	SetEgg(w http.ResponseWriter, r *http.Request)
@@ -29,20 +36,20 @@ func (h *incubatorHandler) Clear(w http.ResponseWriter, r *http.Request) {
 
 	incubatorInst, err := h.s.Clear(r.Context())
 	if err != nil {
-		http.Error(w, "err-incubator-clear", http.StatusInternalServerError)
+		http.Error(w, ErrClear, http.StatusInternalServerError)
 		h.log.Error("Cant clear incubator", zap.Error(err))
 		return
 	}
 
 	response, err := json.Marshal(incubatorInst)
 	if err != nil {
-		http.Error(w, "err-incubator-marshal", http.StatusInternalServerError)
+		http.Error(w, ErrClear, http.StatusInternalServerError)
 		h.log.Error("Cant marshal incubator", zap.Error(err))
 	}
 
 	_, err = w.Write(response)
 	if err != nil {
-		http.Error(w, "err-incubator-write", http.StatusInternalServerError)
+		http.Error(w, ErrClear, http.StatusInternalServerError)
 		h.log.Error("Cant write incubator", zap.Error(err))
 	}
 
@@ -54,28 +61,28 @@ func (h *incubatorHandler) OpenEgg(w http.ResponseWriter, r *http.Request) {
 
 	eggId, err := strconv.ParseUint(eggIdStr, 10, 64)
 	if err != nil {
-		http.Error(w, "err-egg-id", http.StatusBadRequest)
+		http.Error(w, ErrOpenEgg, http.StatusBadRequest)
 		h.log.Error("Cant parse egg id", zap.Error(err))
 		return
 	}
 
 	pet, err := h.s.OpenEgg(r.Context(), eggId)
 	if err != nil {
-		http.Error(w, "err-egg-open", http.StatusInternalServerError)
+		http.Error(w, ErrOpenEgg, http.StatusInternalServerError)
 		h.log.Error("Cant open egg", zap.Error(err))
 		return
 	}
 
 	response, err := json.Marshal(pet)
 	if err != nil {
-		http.Error(w, "err-egg-marshal", http.StatusInternalServerError)
+		http.Error(w, ErrOpenEgg, http.StatusInternalServerError)
 		h.log.Error("Cant marshal incubator", zap.Error(err))
 		return
 	}
 
 	_, err = w.Write(response)
 	if err != nil {
-		http.Error(w, "err-egg-write", http.StatusInternalServerError)
+		http.Error(w, ErrOpenEgg, http.StatusInternalServerError)
 		h.log.Error("Cant write incubator", zap.Error(err))
 	}
 }
@@ -88,21 +95,21 @@ func (h *incubatorHandler) SetEgg(w http.ResponseWriter, r *http.Request) {
 
 	incubatorInst, err := h.s.SetEgg(r.Context(), eggId)
 	if err != nil {
-		http.Error(w, "err-incubator-set", http.StatusInternalServerError)
+		http.Error(w, ErrSetEgg, http.StatusInternalServerError)
 		h.log.Error("Cant set incubator", zap.Error(err))
 		return
 	}
 
 	response, err := json.Marshal(incubatorInst)
 	if err != nil {
-		http.Error(w, "err-incubator-marshal", http.StatusInternalServerError)
+		http.Error(w, ErrSetEgg, http.StatusInternalServerError)
 		h.log.Error("Cant marshal incubator", zap.Error(err))
 		return
 	}
 
 	_, err = w.Write(response)
 	if err != nil {
-		http.Error(w, "err-incubator-write", http.StatusInternalServerError)
+		http.Error(w, ErrSetEgg, http.StatusInternalServerError)
 		h.log.Error("Cant write incubator", zap.Error(err))
 	}
 }
@@ -110,21 +117,21 @@ func (h *incubatorHandler) SetEgg(w http.ResponseWriter, r *http.Request) {
 func (h *incubatorHandler) Get(w http.ResponseWriter, r *http.Request) {
 	incubatorInst, err := h.s.Get(r.Context())
 	if err != nil {
-		http.Error(w, "err-incubator-get", http.StatusInternalServerError)
+		http.Error(w, ErrGet, http.StatusInternalServerError)
 		h.log.Error("Cant get incubator", zap.Error(err))
 		return
 	}
 
 	response, err := json.Marshal(incubatorInst)
 	if err != nil {
-		http.Error(w, "err-incubator-marshal", http.StatusInternalServerError)
+		http.Error(w, ErrGet, http.StatusInternalServerError)
 		h.log.Error("Cant marshal incubator", zap.Error(err))
 		return
 	}
 
 	_, err = w.Write(response)
 	if err != nil {
-		http.Error(w, "err-incubator-write", http.StatusInternalServerError)
+		http.Error(w, ErrGet, http.StatusInternalServerError)
 		h.log.Error("Cant write incubator", zap.Error(err))
 	}
 }

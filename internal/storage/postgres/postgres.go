@@ -1,21 +1,21 @@
 package postgres
 
 import (
-	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"log"
 	"pets/internal/config"
 )
 
 type Storage struct {
-	Db *sql.DB
+	Db *sqlx.DB
 }
 
 func New(cfg config.Storage) *Storage {
 
 	connStr := fmt.Sprintf("user=%s dbname=%s password=%s port=%d sslmode=disable", cfg.User, cfg.Dbname, cfg.Password, cfg.Port)
-	db, err := sql.Open("postgres", connStr)
+	db, err := sqlx.Connect("postgres", connStr)
 	if err != nil {
 		log.Panic(err)
 	}

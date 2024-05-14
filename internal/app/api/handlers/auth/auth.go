@@ -42,7 +42,7 @@ func (h *authHandler) Validate(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&webAppData)
 	if err != nil {
 		h.log.Error("Cant decode", zap.Error(err))
-		http.Error(w, "err-user-login", http.StatusBadRequest)
+		http.Error(w, ErrValidate, http.StatusBadRequest)
 		return
 	}
 

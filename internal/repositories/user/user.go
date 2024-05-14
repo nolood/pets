@@ -2,8 +2,8 @@ package user
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 	"pets/internal/domain/models"
 	"pets/internal/storage/postgres"
@@ -14,7 +14,7 @@ type Repository interface {
 }
 
 type userRepo struct {
-	db  *sql.DB
+	db  *sqlx.DB
 	log *zap.Logger
 }
 

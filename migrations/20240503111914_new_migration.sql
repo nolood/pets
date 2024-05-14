@@ -64,6 +64,8 @@ CREATE TABLE IF NOT EXISTS slots (
                                      pet_id INTEGER,
                                      charge INTEGER NOT NULL DEFAULT 100,
                                      index INTEGER NOT NULL DEFAULT 0,
+                                     is_available BOOLEAN NOT NULL DEFAULT FALSE,
+                                     price INTEGER NOT NULL DEFAULT 0,
                                      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                      FOREIGN KEY (farm_id) REFERENCES farms (id),
