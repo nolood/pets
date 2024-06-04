@@ -13,3 +13,4 @@ export GOOSE_DRIVER=postgres
 export GOOSE_MIGRATION_DIR=./migrations
 export GOOSE_DBSTRING=postgres://postgres:1234@localhost:5444/pets
 ```
+TEST QODANA
