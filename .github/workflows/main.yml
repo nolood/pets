@@ -1,4 +1,8 @@
 name: Qodana
+
+env:
+  QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+
 on:
   workflow_dispatch:
   pull_request:

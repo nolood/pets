@@ -2,13 +2,15 @@ package config
 
 import (
 	"flag"
+	"github.com/joho/godotenv"
+	"log"
 	"os"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Telegram struct {
-	Token string `yaml:"token" env-required:"true"`
+	Token string `env:"TELEGRAM_BOT_TOKEN"`
 }
 type Storage struct {
 	Host     string `yaml:"host"`
@@ -24,7 +26,7 @@ type Config struct {
 	Secret   string   `yaml:"secret" env-required:"true"`
 	Static   string   `yaml:"static" env-default:"./static"`
 	Storage  Storage  `yaml:"storage" env-required:"true"`
-	Telegram Telegram `yaml:"telegram" env-required:"true"`
+	Telegram Telegram `yaml:"-"`
 }
 
 func MustLoad() *Config {
@@ -42,6 +44,18 @@ func MustLoad() *Config {
 	if err := cleanenv.ReadConfig(path, &cfg); err != nil {
 		panic("failed to read config: " + err.Error())
 	}
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Panicf("Error loading .env file: %v", err)
+	}
+
+	var telegramCfg Telegram
+	if err = cleanenv.ReadEnv(&telegramCfg); err != nil {
+		panic("failed to read env: " + err.Error())
+	}
+
+	cfg.Telegram = telegramCfg
 
 	return &cfg
 }
