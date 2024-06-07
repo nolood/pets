@@ -32,6 +32,8 @@ func New(log *zap.Logger, s incubator.Service) Handler {
 	return &incubatorHandler{s: s, log: log}
 }
 
+// Clear - убрать яйцо из инкубатора
+
 func (h *incubatorHandler) Clear(w http.ResponseWriter, r *http.Request) {
 
 	incubatorInst, err := h.s.Clear(r.Context())
@@ -54,6 +56,8 @@ func (h *incubatorHandler) Clear(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+// OpenEgg - открыть яйцо в инкубаторе
 
 func (h *incubatorHandler) OpenEgg(w http.ResponseWriter, r *http.Request) {
 
@@ -87,6 +91,8 @@ func (h *incubatorHandler) OpenEgg(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SetEgg - установить яйцо в инкубаторе
+
 func (h *incubatorHandler) SetEgg(w http.ResponseWriter, r *http.Request) {
 
 	eggIdStr := chi.URLParam(r, "eggId")
@@ -113,6 +119,8 @@ func (h *incubatorHandler) SetEgg(w http.ResponseWriter, r *http.Request) {
 		h.log.Error("Cant write incubator", zap.Error(err))
 	}
 }
+
+// Get - получить инкубатор
 
 func (h *incubatorHandler) Get(w http.ResponseWriter, r *http.Request) {
 	incubatorInst, err := h.s.Get(r.Context())

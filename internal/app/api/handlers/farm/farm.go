@@ -2,6 +2,7 @@ package farm
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"net/http"
@@ -28,6 +29,8 @@ func New(log *zap.Logger, service farm.Service) Handler {
 	return &farmHandler{service: service, log: log}
 }
 
+// Get - получить ферму
+
 func (h *farmHandler) Get(w http.ResponseWriter, r *http.Request) {
 	farmInst, err := h.service.Get(r.Context())
 	if err != nil {
@@ -50,9 +53,13 @@ func (h *farmHandler) Get(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SetPet - установить питомца в слот фермы
+
 func (h *farmHandler) SetPet(w http.ResponseWriter, r *http.Request) {
 	strSlotId := chi.URLParam(r, "slotId")
 	strPetId := chi.URLParam(r, "petId")
+
+	h.log.Info(fmt.Sprintf("SlotId: %s, PetId: %s", strSlotId, strPetId))
 
 	slotId, err := strconv.ParseUint(strSlotId, 10, 64)
 	if err != nil {
@@ -89,6 +96,8 @@ func (h *farmHandler) SetPet(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+// RemovePet - убрать питомца из слота фермы
 
 func (h *farmHandler) RemovePet(w http.ResponseWriter, r *http.Request) {
 
