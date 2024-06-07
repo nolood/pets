@@ -1,0 +1,4 @@
+pets/.idea
+*.idea
+tmp
+.env
