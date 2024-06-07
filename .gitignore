@@ -1,4 +1,3 @@
-pets/.idea
-*.idea
+.idea
 tmp
 .env
