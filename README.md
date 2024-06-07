@@ -1,6 +1,10 @@
-# Tasks
-- Start - start local server
-- Dev - start and watch local server
+# /pets
+Основное приложение, рест апи, валидация подключения, миграции, докер
+
+
+# /pets-clicker
+Websocket сервер для мини игры кликер
+
 
 # Migrations 
 
@@ -13,4 +17,3 @@ export GOOSE_DRIVER=postgres
 export GOOSE_MIGRATION_DIR=./migrations
 export GOOSE_DBSTRING=postgres://postgres:1234@localhost:5444/pets
 ```
-TEST QODANA
