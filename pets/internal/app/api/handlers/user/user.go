@@ -1,10 +1,10 @@
 package user
 
 import (
+	"cyberpets/pets/internal/app/api/services/user"
 	"go.uber.org/zap"
 	"log"
 	"net/http"
-	"pets/internal/app/api/services/user"
 )
 
 type Handler interface {

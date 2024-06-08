@@ -1,10 +1,10 @@
 package app
 
 import (
+	"cyberpets/pets/internal/app/api"
+	"cyberpets/pets/internal/config"
+	"cyberpets/pets/internal/storage/postgres"
 	"go.uber.org/zap"
-	"pets/internal/app/api"
-	"pets/internal/config"
-	"pets/internal/storage/postgres"
 )
 
 type App struct {

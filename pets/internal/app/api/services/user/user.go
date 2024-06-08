@@ -2,9 +2,9 @@ package user
 
 import (
 	"context"
+	"cyberpets/pets/internal/domain/models"
+	"cyberpets/pets/internal/repositories/user"
 	"go.uber.org/zap"
-	"pets/internal/domain/models"
-	"pets/internal/repositories/user"
 )
 
 type Service interface {

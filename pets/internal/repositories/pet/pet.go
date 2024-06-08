@@ -2,11 +2,11 @@ package pet
 
 import (
 	"context"
+	"cyberpets/pets/internal/domain/models"
+	"cyberpets/pets/internal/storage/postgres"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	"log"
-	"pets/internal/domain/models"
-	"pets/internal/storage/postgres"
 )
 
 type Repository interface {

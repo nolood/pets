@@ -1,12 +1,12 @@
 package farm
 
 import (
+	"cyberpets/pets/internal/app/api/services/farm"
 	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"net/http"
-	"pets/internal/app/api/services/farm"
 	"strconv"
 )
 

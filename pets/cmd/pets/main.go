@@ -1,18 +1,18 @@
 package main
 
 import (
+	"cyberpets/logger"
+	"cyberpets/pets/internal/app"
+	"cyberpets/pets/internal/config"
 	"os"
 	"os/signal"
-	"pets/internal/app"
-	"pets/internal/config"
-	"pets/internal/lib/logger"
 	"syscall"
 )
 
 func main() {
 	cfg := config.MustLoad()
 
-	log := logger.New("local")
+	log := logger.New(cfg.Env)
 
 	application := app.New(log, cfg.Port, cfg)
 

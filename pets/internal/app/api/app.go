@@ -1,15 +1,15 @@
 package api
 
 import (
+	"cyberpets/pets/internal/app/api/handlers"
+	"cyberpets/pets/internal/app/api/routers"
+	"cyberpets/pets/internal/app/api/services"
+	"cyberpets/pets/internal/config"
+	"cyberpets/pets/internal/repositories"
+	"cyberpets/pets/internal/storage/postgres"
 	"errors"
 	"go.uber.org/zap"
 	"net/http"
-	"pets/internal/app/api/handlers"
-	"pets/internal/app/api/routers"
-	"pets/internal/app/api/services"
-	"pets/internal/config"
-	"pets/internal/repositories"
-	"pets/internal/storage/postgres"
 	"strconv"
 )
 

@@ -2,12 +2,12 @@ package incubator
 
 import (
 	"context"
+	"cyberpets/pets/internal/domain/models"
+	"cyberpets/pets/internal/storage/postgres"
 	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"pets/internal/domain/models"
-	"pets/internal/storage/postgres"
 )
 
 type Repository interface {

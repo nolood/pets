@@ -1,11 +1,11 @@
 package postgres
 
 import (
+	"cyberpets/pets/internal/config"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"log"
-	"pets/internal/config"
 )
 
 type Storage struct {

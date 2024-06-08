@@ -1,11 +1,11 @@
 package incubator
 
 import (
+	"cyberpets/pets/internal/app/api/services/incubator"
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"net/http"
-	"pets/internal/app/api/services/incubator"
 	"strconv"
 )
 

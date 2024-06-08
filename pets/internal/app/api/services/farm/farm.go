@@ -2,9 +2,9 @@ package farm
 
 import (
 	"context"
+	"cyberpets/pets/internal/domain/models"
+	"cyberpets/pets/internal/repositories/farm"
 	"fmt"
-	"pets/internal/domain/models"
-	"pets/internal/repositories/farm"
 )
 
 type Service interface {

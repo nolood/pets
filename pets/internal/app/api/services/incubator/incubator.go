@@ -2,9 +2,9 @@ package incubator
 
 import (
 	"context"
+	"cyberpets/pets/internal/domain/models"
+	"cyberpets/pets/internal/repositories"
 	"fmt"
-	"pets/internal/domain/models"
-	"pets/internal/repositories"
 )
 
 type Service interface {

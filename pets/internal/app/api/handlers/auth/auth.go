@@ -1,12 +1,12 @@
 package auth
 
 import (
+	"cyberpets/pets/internal/app/api/services/auth"
+	"cyberpets/pets/internal/domain/telegram"
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/zap"
 	"net/http"
-	"pets/internal/app/api/services/auth"
-	"pets/internal/domain/telegram"
 )
 
 var (

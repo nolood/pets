@@ -2,9 +2,9 @@ package auth
 
 import (
 	"context"
+	"cyberpets/pets/internal/lib/jwt"
 	jwtgo "github.com/dgrijalva/jwt-go"
 	"net/http"
-	"pets/internal/lib/jwt"
 	"strings"
 )
 

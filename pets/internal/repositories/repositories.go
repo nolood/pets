@@ -1,12 +1,12 @@
 package repositories
 
 import (
+	"cyberpets/pets/internal/repositories/farm"
+	"cyberpets/pets/internal/repositories/incubator"
+	"cyberpets/pets/internal/repositories/pet"
+	"cyberpets/pets/internal/repositories/user"
+	"cyberpets/pets/internal/storage/postgres"
 	"go.uber.org/zap"
-	"pets/internal/repositories/farm"
-	"pets/internal/repositories/incubator"
-	"pets/internal/repositories/pet"
-	"pets/internal/repositories/user"
-	"pets/internal/storage/postgres"
 )
 
 type Repositories struct {

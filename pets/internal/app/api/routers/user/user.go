@@ -1,8 +1,8 @@
 package user
 
 import (
+	"cyberpets/pets/internal/app/api/handlers/user"
 	"github.com/go-chi/chi/v5"
-	"pets/internal/app/api/handlers/user"
 )
 
 func New(handler user.Handler) *chi.Mux {

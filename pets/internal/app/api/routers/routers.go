@@ -1,16 +1,16 @@
 package routers
 
 import (
+	"cyberpets/pets/internal/app/api/handlers"
+	authmiddleware "cyberpets/pets/internal/app/api/middlewares/auth"
+	"cyberpets/pets/internal/app/api/routers/auth"
+	"cyberpets/pets/internal/app/api/routers/farm"
+	"cyberpets/pets/internal/app/api/routers/incubator"
+	"cyberpets/pets/internal/app/api/routers/user"
+	"cyberpets/pets/internal/config"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"net/http"
-	"pets/internal/app/api/handlers"
-	authmiddleware "pets/internal/app/api/middlewares/auth"
-	"pets/internal/app/api/routers/auth"
-	"pets/internal/app/api/routers/farm"
-	"pets/internal/app/api/routers/incubator"
-	"pets/internal/app/api/routers/user"
-	"pets/internal/config"
 	"time"
 )
 

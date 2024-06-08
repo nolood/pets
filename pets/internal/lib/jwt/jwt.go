@@ -1,8 +1,8 @@
 package jwt
 
 import (
+	"cyberpets/pets/internal/domain/models"
 	jwtgo "github.com/dgrijalva/jwt-go"
-	"pets/internal/domain/models"
 	"time"
 )
 

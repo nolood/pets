@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"cyberpets/pets/internal/app/api/handlers/auth"
+	"cyberpets/pets/internal/app/api/handlers/farm"
+	"cyberpets/pets/internal/app/api/handlers/incubator"
+	"cyberpets/pets/internal/app/api/handlers/user"
+	"cyberpets/pets/internal/app/api/services"
 	"go.uber.org/zap"
-	"pets/internal/app/api/handlers/auth"
-	"pets/internal/app/api/handlers/farm"
-	"pets/internal/app/api/handlers/incubator"
-	"pets/internal/app/api/handlers/user"
-	"pets/internal/app/api/services"
 )
 
 type Handlers struct {

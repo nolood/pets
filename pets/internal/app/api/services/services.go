@@ -1,13 +1,13 @@
 package services
 
 import (
+	"cyberpets/pets/internal/app/api/services/auth"
+	"cyberpets/pets/internal/app/api/services/farm"
+	"cyberpets/pets/internal/app/api/services/incubator"
+	"cyberpets/pets/internal/app/api/services/user"
+	"cyberpets/pets/internal/config"
+	"cyberpets/pets/internal/repositories"
 	"go.uber.org/zap"
-	"pets/internal/app/api/services/auth"
-	"pets/internal/app/api/services/farm"
-	"pets/internal/app/api/services/incubator"
-	"pets/internal/app/api/services/user"
-	"pets/internal/config"
-	"pets/internal/repositories"
 )
 
 type Services struct {
