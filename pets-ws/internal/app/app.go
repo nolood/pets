@@ -1,11 +1,20 @@
 package app
 
-import "cyberpets/pets-ws/internal/app/ws"
+import (
+	"cyberpets/pets-ws/internal/app/ws"
+	"cyberpets/pets-ws/internal/app/ws/handlers"
+	"go.uber.org/zap"
+)
 
 type App struct {
-	ws *ws.Ws
+	Ws *ws.Ws
 }
 
-func New() *App {
-	return &App{}
+func New(log *zap.Logger, port int) *App {
+	hands := handlers.New()
+	wsSrv := ws.New(log, port, hands)
+
+	return &App{
+		Ws: wsSrv,
+	}
 }

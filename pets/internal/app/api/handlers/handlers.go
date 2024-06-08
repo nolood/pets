@@ -16,8 +16,6 @@ type Handlers struct {
 	Incubator incubator.Handler
 }
 
-// TODO: подумать над ошибками которые возвращает каждый хендлер
-
 func New(log *zap.Logger, servs *services.Services, token string) *Handlers {
 	return &Handlers{
 		User:      user.New(log, servs.User),
