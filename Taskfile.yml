@@ -7,6 +7,12 @@ tasks:
     desc: "Start the local server"
     cmds:
       - go run ./pets/cmd/pets/main.go -config ./pets/config/local.yml
+  start-ws:
+    aliases:
+      - start-ws
+    desc: "Start the local ws server"
+    cmds:
+      - go run ./pets-ws/cmd/pets-ws/main.go -config ./pets-ws/config/local.yml
   new-migrate:
     aliases:
       - new
