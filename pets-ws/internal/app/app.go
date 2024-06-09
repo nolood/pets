@@ -1,6 +1,7 @@
 package app
 
 import (
+	"cyberpets/pets-ws/internal/app/clicker"
 	"cyberpets/pets-ws/internal/app/ws"
 	"cyberpets/pets-ws/internal/app/ws/handlers"
 	"cyberpets/pets-ws/internal/config"
@@ -14,7 +15,9 @@ type App struct {
 }
 
 func New(log *zap.Logger, cfg *config.Config) *App {
-	service := services.New(log)
+	clicker := clicker.New(log, cfg)
+
+	service := services.New(log, clicker)
 	hands := handlers.New(log, service, cfg)
 	wsSrv := ws.New(log, cfg.Port, hands)
 

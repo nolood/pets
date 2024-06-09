@@ -2,10 +2,14 @@ package router
 
 import (
 	"context"
+	"cyberpets/pets-ws/internal/app/clicker"
+	"cyberpets/pets-ws/internal/domain/models"
+	"cyberpets/pets-ws/internal/services/dto"
+	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 
+	"go.uber.org/zap"
 	"golang.org/x/net/websocket"
 )
 
@@ -14,13 +18,20 @@ type Service interface {
 }
 
 type routerService struct {
+	clicker *clicker.App
+	log     *zap.Logger
 }
 
-func New() Service {
-	return &routerService{}
+func New(clicker *clicker.App, log *zap.Logger) Service {
+	return &routerService{
+		clicker: clicker,
+		log:     log,
+	}
 }
 
 func (r *routerService) Read(ctx context.Context, conn *websocket.Conn) {
+	const op = "service.router.read"
+
 	buf := make([]byte, 1024)
 	for {
 		n, err := conn.Read(buf)
@@ -28,16 +39,27 @@ func (r *routerService) Read(ctx context.Context, conn *websocket.Conn) {
 			if errors.Is(err, io.EOF) {
 				break
 			}
-
-			fmt.Println("read error:", err)
+			r.log.Error(op, zap.Error(err))
 			continue
 		}
 
-		msg := buf[:n]
-		fmt.Println("read:", string(msg))
+		var msg dto.Message
+
+		err = json.Unmarshal(buf[:n], &msg)
+		if err != nil {
+			r.log.Error(op, zap.Error(err))
+		}
+
+		switch msg.GameMode {
+		case models.ClickerMode:
+			r.clicker.Hands.Handle(msg)
+		case models.CardMode:
+			// r.card.Handle()
+		}
+
 		_, err = conn.Write([]byte("thank you for the message " + ctx.Value("user_id").(string)))
 		if err != nil {
-			fmt.Println("write error:", err)
+			r.log.Error(op, zap.Error(err))
 		}
 	}
 }
