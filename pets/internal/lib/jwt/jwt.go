@@ -1,19 +1,15 @@
 package jwt
 
 import (
+	jwtclaims "cyberpets/jwt-claims"
 	"cyberpets/pets/internal/domain/models"
-	jwtgo "github.com/dgrijalva/jwt-go"
 	"time"
+
+	jwtgo "github.com/dgrijalva/jwt-go"
 )
 
-type Claims struct {
-	jwtgo.StandardClaims
-	ID       uint64 `json:"id"`
-	Username string `json:"username"`
-}
-
 func GenerateToken(user models.User, secret string) (string, error) {
-	claims := Claims{
+	claims := jwtclaims.Claims{
 		Username: user.Username,
 		ID:       user.ID,
 		StandardClaims: jwtgo.StandardClaims{

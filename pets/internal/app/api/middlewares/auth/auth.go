@@ -2,10 +2,11 @@ package auth
 
 import (
 	"context"
-	"cyberpets/pets/internal/lib/jwt"
-	jwtgo "github.com/dgrijalva/jwt-go"
+	jwtclaims "cyberpets/jwt-claims"
 	"net/http"
 	"strings"
+
+	jwtgo "github.com/dgrijalva/jwt-go"
 )
 
 func Middleware(secret string, env string) func(http.Handler) http.Handler {
@@ -33,7 +34,7 @@ func Middleware(secret string, env string) func(http.Handler) http.Handler {
 
 			tokenString := parts[1]
 
-			var myClaims jwt.Claims
+			var myClaims jwtclaims.Claims
 			token, err := jwtgo.ParseWithClaims(tokenString, &myClaims, func(token *jwtgo.Token) (interface{}, error) {
 				return []byte(secret), nil
 			})

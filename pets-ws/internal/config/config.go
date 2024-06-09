@@ -2,15 +2,17 @@ package config
 
 import (
 	"flag"
-	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
+
+	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	Env  string `yaml:"env" env-required:"true"`
-	Port int    `yaml:"port" env-required:"true"`
+	Env    string `yaml:"env" env-required:"true"`
+	Port   int    `yaml:"port" env-required:"true"`
+	Secret string `yaml:"secret" env-required:"true"`
 }
 
 func MustLoad() *Config {

@@ -1,14 +1,16 @@
 package router
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"golang.org/x/net/websocket"
 	"io"
+
+	"golang.org/x/net/websocket"
 )
 
 type Service interface {
-	Read(conn *websocket.Conn)
+	Read(ctx context.Context, conn *websocket.Conn)
 }
 
 type routerService struct {
@@ -18,7 +20,7 @@ func New() Service {
 	return &routerService{}
 }
 
-func (r *routerService) Read(conn *websocket.Conn) {
+func (r *routerService) Read(ctx context.Context, conn *websocket.Conn) {
 	buf := make([]byte, 1024)
 	for {
 		n, err := conn.Read(buf)
@@ -33,7 +35,7 @@ func (r *routerService) Read(conn *websocket.Conn) {
 
 		msg := buf[:n]
 		fmt.Println("read:", string(msg))
-		_, err = conn.Write([]byte("thank you for the message"))
+		_, err = conn.Write([]byte("thank you for the message " + ctx.Value("user_id").(string)))
 		if err != nil {
 			fmt.Println("write error:", err)
 		}

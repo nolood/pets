@@ -1,27 +1,68 @@
 package websockethandler
 
 import (
+	"context"
+	jwtclaims "cyberpets/jwt-claims"
+	"cyberpets/pets-ws/internal/config"
 	"cyberpets/pets-ws/internal/services/router"
-	"fmt"
+	"net/http"
+
+	"github.com/dgrijalva/jwt-go"
+	"go.uber.org/zap"
 	"golang.org/x/net/websocket"
 )
 
+const TOKEN = "token"
+
 type Server struct {
-	connections map[*websocket.Conn]bool
+	log         *zap.Logger
+	connections map[*websocket.Conn]string
 	service     router.Service
+	cfg         *config.Config
 }
 
-func New(service router.Service) *Server {
+func New(log *zap.Logger, service router.Service, cfg *config.Config) *Server {
 	return &Server{
+		log:         log,
 		service:     service,
-		connections: make(map[*websocket.Conn]bool),
+		cfg:         cfg,
+		connections: make(map[*websocket.Conn]string),
 	}
 }
 
+// TODO: think about refactor
+
 func (s *Server) Handler(conn *websocket.Conn) {
-	fmt.Println(conn.Request().URL.Query())
+	query := conn.Request().URL.Query()
 
-	s.connections[conn] = true
+	if !query.Has(TOKEN) {
+		conn.WriteClose(401)
+	}
 
-	s.service.Read(conn)
+	tokenString := query.Get(TOKEN)
+
+	var myClaims jwtclaims.Claims
+	userID := tokenString
+
+	if s.cfg.Env != "local" {
+		token, err := jwt.ParseWithClaims(tokenString, &myClaims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(s.cfg.Secret), nil
+		})
+		if err != nil {
+			conn.WriteClose(http.StatusUnauthorized)
+		}
+
+		if !token.Valid {
+			conn.WriteClose(http.StatusUnauthorized)
+		}
+
+		userID = myClaims.Id
+	}
+
+	// TODO: fix this
+	ctx := context.WithValue(conn.Request().Context(), "user_id", userID)
+
+	s.connections[conn] = userID
+
+	s.service.Read(ctx, conn)
 }
