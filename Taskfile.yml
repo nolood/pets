@@ -6,24 +6,28 @@ tasks:
       - start-main
     desc: "Start the local server"
     cmds:
-      - go run ./pets/cmd/pets/main.go -config ./pets/config/local.yml
+      - cd cyberpets && go run ./pets/cmd/pets/main.go -config ./pets/config/local.yml
+
   start-ws:
     aliases:
       - start-ws
     desc: "Start the local ws server"
     cmds:
-      - go run ./pets-ws/cmd/pets-ws/main.go -config ./pets-ws/config/local.yml
+      - cd cyberpets && go run ./pets-ws/cmd/pets-ws/main.go -config ./pets-ws/config/local.yml
+
   new-migrate:
     aliases:
       - new
     desc: "Create new migration"
     cmds:
-      - GOOSE_DRIVER=postgres GOOSE_MIGRATION_DIR=./pets/migrations GOOSE_DBSTRING=postgres://postgres:1234@localhost:5444/pets goose create new-migration sql
+      - GOOSE_DRIVER=postgres GOOSE_MIGRATION_DIR=./cyberpets/pets/migrations GOOSE_DBSTRING=postgres://postgres:1234@localhost:5444/pets goose create new-migration sql
+
   up:
     desc: "Migration up"
     cmds:
-      - GOOSE_DRIVER=postgres GOOSE_MIGRATION_DIR=./pets/migrations GOOSE_DBSTRING=postgres://postgres:1234@localhost:5444/pets goose up
+      - GOOSE_DRIVER=postgres GOOSE_MIGRATION_DIR=./cyberpets/pets/migrations GOOSE_DBSTRING=postgres://postgres:1234@localhost:5444/pets goose up
+
   down:
     desc: "Migration down"
     cmds:
-      - GOOSE_DRIVER=postgres GOOSE_MIGRATION_DIR=./pets/migrations GOOSE_DBSTRING=postgres://postgres:1234@localhost:5444/pets goose down
+      - GOOSE_DRIVER=postgres GOOSE_MIGRATION_DIR=./cyberpets/pets/migrations GOOSE_DBSTRING=postgres://postgres:1234@localhost:5444/pets goose down
