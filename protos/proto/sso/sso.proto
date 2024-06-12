@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package sso;
+
+option go_package = "cyberpets.sso.v1;ssov1";
+
+service Auth {
+  rpc Validate(ValidateRequest) returns (ValidateResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+
+message ValidateRequest {
+  string user = 1;
+  int64 auth_date = 2; 
+	string query_id = 3;
+	string hash = 4;
+}
+
+message ValidateResponse {
+  string token = 1;
+}
+
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+
+message ValidateTokenResponse {
+  bool valid = 1;
+  string user_id = 2;
+}
