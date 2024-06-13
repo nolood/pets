@@ -1,6 +1,11 @@
 package logger
 
-import "go.uber.org/zap"
+import (
+	"os"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+)
 
 var (
 	envLocal = "local"
@@ -9,15 +14,32 @@ var (
 
 func New(env string) *zap.Logger {
 	var log *zap.Logger
+	var core zapcore.Core
+
+	consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+	consoleWriter := zapcore.Lock(os.Stdout)
+	consoleCore := zapcore.NewCore(consoleEncoder, consoleWriter, zap.DebugLevel)
+
+	fileEncoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+	file, err := os.Create("logs.log")
+	if err != nil {
+		panic(err)
+	}
+	fileWriter := zapcore.AddSync(file)
+	fileCore := zapcore.NewCore(fileEncoder, fileWriter, zap.InfoLevel)
+
+	// TODO: db writer and only for prod
 
 	switch env {
 	case envLocal:
-		log, _ = zap.NewDevelopment()
+		core = zapcore.NewTee(consoleCore, fileCore)
 	case envProd:
-		log, _ = zap.NewProduction()
+		core = zapcore.NewTee(consoleCore, fileCore)
 	default:
-		log, _ = zap.NewProduction()
+		core = zapcore.NewTee(consoleCore, fileCore)
 	}
+
+	log = zap.New(core)
 
 	return log
 }

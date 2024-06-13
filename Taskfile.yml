@@ -1,6 +1,14 @@
 version: "3"
 
 tasks:
+
+  start-sso:
+    aliases:
+      - start-sso
+    desc: "Start the local sso server"
+    cmds:
+      - cd cyberpets && go run ./sso/cmd/sso/main.go -config ./sso/config/local.yml
+
   start-main:
     aliases:
       - start-main
