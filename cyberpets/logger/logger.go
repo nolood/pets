@@ -28,11 +28,9 @@ func New(env string) *zap.Logger {
 	fileWriter := zapcore.AddSync(file)
 	fileCore := zapcore.NewCore(fileEncoder, fileWriter, zap.InfoLevel)
 
-	// TODO: db writer and only for prod
-
 	switch env {
 	case envLocal:
-		core = zapcore.NewTee(consoleCore, fileCore)
+		core = zapcore.NewTee(consoleCore)
 	case envProd:
 		core = zapcore.NewTee(consoleCore, fileCore)
 	default:

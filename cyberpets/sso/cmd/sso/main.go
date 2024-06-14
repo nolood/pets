@@ -2,20 +2,28 @@ package main
 
 import (
 	"cyberpets/logger"
+	"cyberpets/sso/internal/app"
 	"cyberpets/sso/internal/config"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-
 	cfg := config.MustLoad()
 
 	log := logger.New(cfg.Env)
 
-	log.Info("sso")
-	log.Error("error")
-	log.Debug("debug")
-	log.Warn("warn")
-	log.Fatal("fatal")
-	log.Panic("panic")
+	application := app.New(log, cfg.GRPC)
 
+	go application.GRPCSrv.MustRun()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+
+	<-stop
+
+	application.GRPCSrv.Stop()
+
+	log.Info("Application stopped")
 }
