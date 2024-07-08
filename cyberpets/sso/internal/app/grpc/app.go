@@ -1,6 +1,7 @@
 package grpcapp
 
 import (
+	"cyberpets/sso/grpc/auth"
 	"fmt"
 	"net"
 
@@ -16,6 +17,8 @@ type App struct {
 
 func New(log *zap.Logger, port int) *App {
 	gRPCServer := grpc.NewServer()
+
+	auth.Register(gRPCServer)
 
 	return &App{
 		log:        log,
