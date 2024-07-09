@@ -15,8 +15,9 @@ type GRPC struct {
 }
 
 type Config struct {
-	Env  string `yaml:"env" env-required:"true"`
-	GRPC GRPC   `yaml:"grpc" env-required:"true"`
+	Env              string `yaml:"env" env-required:"true"`
+	TelegramBotToken string `yaml:"telegram_bot_token" env-required:"true"`
+	GRPC             GRPC   `yaml:"grpc" env-required:"true"`
 }
 
 func MustLoad() *Config {

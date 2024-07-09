@@ -1,7 +1,9 @@
 package grpcapp
 
 import (
-	"cyberpets/sso/grpc/auth"
+	"cyberpets/sso/grpc/server"
+	"cyberpets/sso/internal/config"
+	"cyberpets/sso/internal/services/auth"
 	"fmt"
 	"net"
 
@@ -15,15 +17,17 @@ type App struct {
 	port       int
 }
 
-func New(log *zap.Logger, port int) *App {
+func New(log *zap.Logger, cfg *config.Config) *App {
 	gRPCServer := grpc.NewServer()
 
-	auth.Register(gRPCServer)
+	authService := auth.New(log, cfg.TelegramBotToken)
+
+	server.Register(gRPCServer, authService)
 
 	return &App{
 		log:        log,
 		gRPCServer: gRPCServer,
-		port:       port,
+		port:       cfg.GRPC.Port,
 	}
 }
 

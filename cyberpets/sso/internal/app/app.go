@@ -11,9 +11,9 @@ type App struct {
 	GRPCSrv *grpcapp.App
 }
 
-func New(log *zap.Logger, grpcCfg config.GRPC) *App {
+func New(log *zap.Logger, cfg *config.Config) *App {
 
-	grpcApp := grpcapp.New(log, grpcCfg.Port)
+	grpcApp := grpcapp.New(log, cfg)
 
 	return &App{
 		GRPCSrv: grpcApp,

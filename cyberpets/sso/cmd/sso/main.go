@@ -14,7 +14,7 @@ func main() {
 
 	log := logger.New(cfg.Env)
 
-	application := app.New(log, cfg.GRPC)
+	application := app.New(log, cfg)
 
 	go application.GRPCSrv.MustRun()
 
