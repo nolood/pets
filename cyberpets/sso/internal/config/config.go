@@ -17,6 +17,7 @@ type GRPC struct {
 type Config struct {
 	Env              string `yaml:"env" env-required:"true"`
 	TelegramBotToken string `yaml:"telegram_bot_token" env-required:"true"`
+	Secret           string `yaml:"secret" env-required:"true"`
 	GRPC             GRPC   `yaml:"grpc" env-required:"true"`
 }
 

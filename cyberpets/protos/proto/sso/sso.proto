@@ -19,7 +19,7 @@ message ValidateRequest {
 }
 
 message ValidateResponse {
-  string token = 1;
+  bool ok = 1;
 }
 
 
