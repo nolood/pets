@@ -4,12 +4,13 @@ import (
 	"context"
 	"crypto/hmac"
 	"crypto/sha256"
+	ssoclient "cyberpets/pets/internal/clients/sso/grpc"
 	"cyberpets/pets/internal/config"
 	"cyberpets/pets/internal/domain/models"
+	"cyberpets/pets/internal/domain/sso"
 	"cyberpets/pets/internal/domain/telegram"
 	"cyberpets/pets/internal/lib/jwt"
 	"cyberpets/pets/internal/repositories/user"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -30,37 +31,43 @@ type userData struct {
 }
 
 type authService struct {
-	repo user.Repository
-	log  *zap.Logger
-	cfg  *config.Config
+	repo   user.Repository
+	log    *zap.Logger
+	cfg    *config.Config
+	client *ssoclient.Client
 }
 
-func New(log *zap.Logger, repo user.Repository, cfg *config.Config) Service {
-	return &authService{repo: repo, log: log, cfg: cfg}
+func New(log *zap.Logger, repo user.Repository, cfg *config.Config, client *ssoclient.Client) Service {
+	return &authService{repo: repo, log: log, cfg: cfg, client: client}
 }
 
 func (s *authService) Validate(ctx context.Context, data telegram.WebAppData) (string, error) {
 	const op = "service.auth.validate"
 
-	dataCheckString := fmt.Sprintf("auth_date=%d\nquery_id=%s\nuser=%s", data.AuthDate, data.QueryID, data.User)
+	ssoData := sso.ValidateData{
+		Token:    data.Token,
+		User:     data.User,
+		AuthDate: data.AuthDate,
+		QueryId:  data.QueryID,
+		Hash:     data.Hash,
+	}
 
-	secretKey := hmacSHA256([]byte(data.Token), []byte("WebAppData"))
+	ok, err := s.client.Validate(ctx, ssoData)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
 
-	signature := hmacSHA256([]byte(dataCheckString), secretKey)
-
-	if hex.EncodeToString(signature) != data.Hash || isDataOutdated(data.AuthDate) {
-		return "", fmt.Errorf("%s", op)
+	if !ok {
+		return "", fmt.Errorf("%s: bad data", op)
 	}
 
 	var userDataStruct userData
-	err := json.Unmarshal([]byte(data.User), &userDataStruct)
+	err = json.Unmarshal([]byte(data.User), &userDataStruct)
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
 
 	var userModel models.User
-
-	// TODO: to think about - refactoring
 
 	userModel.TgID = userDataStruct.ID
 	userModel.Username = userDataStruct.Username

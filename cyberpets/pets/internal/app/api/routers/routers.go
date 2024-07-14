@@ -7,6 +7,7 @@ import (
 	"cyberpets/pets/internal/app/api/routers/farm"
 	"cyberpets/pets/internal/app/api/routers/incubator"
 	"cyberpets/pets/internal/app/api/routers/user"
+	ssoclient "cyberpets/pets/internal/clients/sso/grpc"
 	"cyberpets/pets/internal/config"
 	"net/http"
 	"time"
@@ -19,7 +20,7 @@ type Routers struct {
 	Router *chi.Mux
 }
 
-func New(hands *handlers.Handlers, cfg *config.Config) *Routers {
+func New(hands *handlers.Handlers, cfg *config.Config, sso *ssoclient.Client) *Routers {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
@@ -35,7 +36,7 @@ func New(hands *handlers.Handlers, cfg *config.Config) *Routers {
 	})
 
 	r.Group(func(r chi.Router) {
-		r.Use(authmiddleware.Middleware(cfg.Secret, cfg.Env))
+		r.Use(authmiddleware.Middleware(cfg.Env, sso))
 		r.Mount("/user", userRts)
 		r.Mount("/farm", farmRts)
 		r.Mount("/incubator", incubatorRts)

@@ -10,3 +10,8 @@ storage:
   dbname: "pets"
 telegram:
   token: ""
+clients:
+  sso:
+    address: "127.0.0.1:44044"
+    timeout: "10s"
+    retriesCount: 3

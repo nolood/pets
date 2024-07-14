@@ -1,4 +1,4 @@
-package grpc
+package ssoclient
 
 import (
 	"context"
@@ -16,7 +16,7 @@ type Client struct {
 	api ssov1.AuthClient
 }
 
-func New(ctx context.Context, addr string, timeout time.Duration, retriesCount int) (*Client, error) {
+func New(ctx context.Context, addr string, timeout time.Duration, retriesCount int) *Client {
 	const op = "clients.sso.grpc.New"
 
 	retryOpts := []grpcretry.CallOption{
@@ -32,10 +32,10 @@ func New(ctx context.Context, addr string, timeout time.Duration, retriesCount i
 		),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		panic(fmt.Errorf("%s: %w", op, err))
 	}
 
-	return &Client{api: ssov1.NewAuthClient(cc)}, nil
+	return &Client{api: ssov1.NewAuthClient(cc)}
 }
 
 func (c *Client) Validate(ctx context.Context, data sso.ValidateData) (bool, error) {

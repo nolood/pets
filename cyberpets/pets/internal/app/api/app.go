@@ -1,9 +1,11 @@
 package api
 
 import (
+	"context"
 	"cyberpets/pets/internal/app/api/handlers"
 	"cyberpets/pets/internal/app/api/routers"
 	"cyberpets/pets/internal/app/api/services"
+	ssoclient "cyberpets/pets/internal/clients/sso/grpc"
 	"cyberpets/pets/internal/config"
 	"cyberpets/pets/internal/repositories"
 	"cyberpets/pets/internal/storage/postgres"
@@ -22,10 +24,12 @@ type Api struct {
 }
 
 func New(log *zap.Logger, port int, storage *postgres.Storage, cfg *config.Config) *Api {
+	sso := ssoclient.New(context.Background(), cfg.Clients.SSO.Address, cfg.Clients.SSO.Timeout, cfg.Clients.SSO.RetriesCount)
 	repos := repositories.New(log, storage)
-	servs := services.New(log, repos, cfg)
+	servs := services.New(log, repos, cfg, sso)
 	hands := handlers.New(log, servs, cfg.Telegram.Token)
-	router := routers.New(hands, cfg)
+	router := routers.New(hands, cfg, sso)
+
 	return &Api{
 		log:    log,
 		port:   port,

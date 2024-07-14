@@ -1,5 +1,5 @@
 env: "local"
-telegram_bot_token: ""
+telegram_bot_token: "kekl"
 secret: "egorlox"
 grpc: 
   port: 44044

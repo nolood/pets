@@ -2,14 +2,12 @@ package auth
 
 import (
 	"context"
-	jwtclaims "cyberpets/jwt-claims"
+	ssoclient "cyberpets/pets/internal/clients/sso/grpc"
 	"net/http"
 	"strings"
-
-	jwtgo "github.com/dgrijalva/jwt-go"
 )
 
-func Middleware(secret string, env string) func(http.Handler) http.Handler {
+func Middleware(env string, sso *ssoclient.Client) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -34,22 +32,16 @@ func Middleware(secret string, env string) func(http.Handler) http.Handler {
 
 			tokenString := parts[1]
 
-			var myClaims jwtclaims.Claims
-			token, err := jwtgo.ParseWithClaims(tokenString, &myClaims, func(token *jwtgo.Token) (interface{}, error) {
-				return []byte(secret), nil
-			})
-
+			ok, userID, err := sso.ValidateToken(context.Background(), tokenString)
 			if err != nil {
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
 
-			if !token.Valid {
+			if !ok {
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
-
-			userID := myClaims.Id
 
 			ctx := context.WithValue(r.Context(), "user_id", userID)
 

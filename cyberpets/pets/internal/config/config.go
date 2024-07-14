@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"time"
 )
 
 type Telegram struct {
@@ -20,6 +21,16 @@ type Storage struct {
 	Dbname   string `yaml:"dbname"`
 }
 
+type SSO struct {
+	Address      string        `yaml:"address"`
+	Timeout      time.Duration `yaml:"timeout"`
+	RetriesCount int           `yaml:"retriesCount"`
+}
+
+type Clients struct {
+	SSO SSO `yaml:"sso"`
+}
+
 type Config struct {
 	Env      string   `yaml:"env" env-required:"true"`
 	Port     int      `yaml:"port" env-required:"true"`
@@ -27,6 +38,7 @@ type Config struct {
 	Static   string   `yaml:"static" env-default:"./static"`
 	Storage  Storage  `yaml:"storage" env-required:"true"`
 	Telegram Telegram `yaml:"-"`
+	Clients  Clients  `yaml:"clients" env-required:"true"`
 }
 
 func MustLoad() *Config {
